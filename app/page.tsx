@@ -1,102 +1,105 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useRef, useState } from "react";
+
+type ChatMsg = { role: "user" | "assistant"; content: string };
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [threadId, setThreadId] = useState<string | null>(null);
+  const [input, setInput] = useState("");
+  const [msgs, setMsgs] = useState<ChatMsg[]>([]);
+  const [busy, setBusy] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  useEffect(() => {
+    const saved = window.localStorage.getItem("assistant_thread_id");
+    if (saved) {
+      setThreadId(saved);
+      return;
+    }
+    fetch("/api/assistants/threads", { method: "POST" })
+      .then((r) => r.json())
+      .then((j) => {
+        if (j.thread_id) {
+          setThreadId(j.thread_id);
+          window.localStorage.setItem("assistant_thread_id", j.thread_id);
+        } else {
+          alert("Failed to create thread");
+        }
+      })
+      .catch((e) => alert(e?.message ?? "Failed to create thread"));
+  }, []);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [msgs, busy]);
+
+  async function onSend() {
+    if (!threadId || !input.trim()) return;
+    const userText = input.trim();
+    setInput("");
+    setMsgs((m) => [...m, { role: "user", content: userText }]);
+    setBusy(true);
+    try {
+      const res = await fetch(`/api/assistants/threads/${threadId}/messages`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ content: userText })
+      });
+      const j = await res.json();
+      if (!res.ok) throw new Error(j.error || "Request failed");
+      setMsgs((m) => [...m, { role: "assistant", content: j.message || "(no content)" }]);
+    } catch (e: any) {
+      setMsgs((m) => [...m, { role: "assistant", content: `Error: ${e?.message ?? e}` }]);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      onSend();
+    }
+  }
+
+  return (
+    <div className="font-sans min-h-screen grid grid-rows-[auto_1fr_auto]">
+      <main className="row-start-2 max-w-3xl w-full mx-auto p-6 flex flex-col gap-4">
+        <h1 className="text-2xl font-semibold">Assistant Chat</h1>
+
+        <div className="border border-neutral-200 dark:border-neutral-800 rounded-lg p-4 h-[60vh] overflow-y-auto bg-white/40 dark:bg-black/20">
+          {msgs.length === 0 && (
+            <div className="text-neutral-500">Schreibe eine Nachricht, um zu starten…</div>
+          )}
+          {msgs.map((m, i) => (
+            <div key={i} className="mb-4">
+              <div className="text-xs uppercase tracking-wide text-neutral-500">{m.role}</div>
+              <div className="whitespace-pre-wrap">{m.content}</div>
+            </div>
+          ))}
+          {busy && <div className="text-neutral-500">Assistant is typing…</div>}
+          <div ref={bottomRef} />
+        </div>
+
+        <div className="flex gap-2">
+          <textarea
+            className="flex-1 border border-neutral-300 dark:border-neutral-700 rounded-md p-3 min-h-[80px] resize-y"
+            placeholder="Nachricht eingeben… (Enter = senden, Shift+Enter = Zeilenumbruch)"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={onKeyDown}
+          />
+          <button
+            onClick={onSend}
+            disabled={!threadId || busy || !input.trim()}
+            className="h-[44px] self-end px-4 rounded-md bg-black text-white disabled:opacity-50"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            Senden
+          </button>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      <footer className="row-start-3 text-center py-4 text-neutral-500 text-sm">
+        Powered by OpenAI Assistants API
       </footer>
     </div>
   );
