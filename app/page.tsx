@@ -65,7 +65,8 @@ export default function Home() {
   return (
     <div className="font-sans min-h-screen grid grid-rows-[auto_1fr_auto]">
       <main className="row-start-2 max-w-3xl w-full mx-auto p-6 flex flex-col gap-4">
-        <h1 className="text-2xl font-semibold">Assistant Chat</h1>
+        <h1 className="text-2xl font-semibold">TALIA</h1>
+        <h3 className="text-2xl font-semibold">Threat Analysis and Learning Intelligence for Automotive</h3>
 
         <div className="border border-neutral-200 dark:border-neutral-800 rounded-lg p-4 h-[60vh] overflow-y-auto bg-white/40 dark:bg-black/20">
           {msgs.length === 0 && (
