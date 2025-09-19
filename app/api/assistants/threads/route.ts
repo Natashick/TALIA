@@ -1,10 +1,10 @@
 export const runtime = "nodejs";
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getOpenAI } from "@/lib/openai";
 
 // POST /api/assistants/threads  -> neuen Thread anlegen
-export async function POST(_req: NextRequest) {
+export async function POST(_req: Request) {
   try {
     const openai = await getOpenAI();
     const thread = await openai.beta.threads.create({});
