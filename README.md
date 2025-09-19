@@ -1,4 +1,4 @@
-# Next.js Assistant Chat (App Router)
+# Next.js Assistant Chat (App Router).
 
 Minimaler Chat mit der OpenAI Assistants API (Threads + Runs) auf Basis von Next.js App Router.
 
