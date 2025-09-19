@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Next.js Assistant Chat (App Router)
 
-## Getting Started
+Minimaler Chat mit der OpenAI Assistants API (Threads + Runs) auf Basis von Next.js App Router.
 
-First, run the development server:
+## Voraussetzungen
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 18+ (empfohlen 20+)
+- Umgebungsvariablen:
+  - `OPENAI_API_KEY` (Format: `sk-...`)
+  - `OPENAI_ASSISTANT_ID` (Format: `asst_...`)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Beispielwerte in `.env.example`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Lokal starten
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. `.env.example` kopieren:
+   ```bash
+   cp .env.example .env.local
+   ```
+   Trage deine Werte ein.
 
-## Learn More
+2. Install:
+   ```bash
+   npm install
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+3. Dev-Server:
+   ```bash
+   npm run dev
+   ```
+   Öffne http://localhost:3000
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API-Endpunkte
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Healthcheck: `GET /api/health` → `ok`
+- Thread anlegen: `POST /api/assistants/threads` → `{ thread_id }`
+- Nachricht senden: `POST /api/assistants/threads/:threadId/messages` → `{ thread_id, message }`
 
-## Deploy on Vercel
+Alle API-Routen laufen mit `runtime = "nodejs"`; das OpenAI SDK wird lazy geladen, um Build-Probleme zu vermeiden.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment auf Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Project → Settings → Environment Variables:
+   - `OPENAI_API_KEY` = dein `sk-...`
+   - `OPENAI_ASSISTANT_ID` = deine `asst_...`
+   (Scope: Production + Preview)
+
+2. Redeploy anstoßen (oder einen Commit pushen).
+
+3. Tests:
+   - `https://<deine-domain>/api/health` → ok
+   - `https://<deine-domain>/` → Chat öffnen, Nachricht senden
+
+## Hinweise
+
+- Build verwendet `--no-turbopack` für Kompatibilität.
+- Längere Antworten können bei Serverless-Timeouts scheitern – optional Streaming/Status-Polling einplanen.
+
+MIT
