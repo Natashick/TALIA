@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getOpenAI } from "@/lib/openai";
 
 export const runtime = "nodejs"; // stabiler als Edge
@@ -7,11 +7,11 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 type Body = { content: string };
 
 // POST /api/assistants/threads/:threadId/messages
-export async function POST(req: NextRequest, { params }: { params: { threadId: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ threadId: string }> }) {
   const assistantId = process.env.OPENAI_ASSISTANT_ID;
   if (!assistantId) return NextResponse.json({ error: "Missing OPENAI_ASSISTANT_ID" }, { status: 500 });
 
-  const threadId = params.threadId;
+  const { threadId } = await params;
   if (!threadId) return NextResponse.json({ error: "Missing threadId" }, { status: 400 });
 
   let body: Body;
@@ -39,10 +39,10 @@ export async function POST(req: NextRequest, { params }: { params: { threadId: s
 
     // 4) Letzte Assistant-Nachricht holen
     const list = await openai.beta.threads.messages.list(threadId, { order: "desc", limit: 10 });
-    const assistantMsg = list.data.find((m) => m.role === "assistant");
+    const assistantMsg = list.data.find((m: any) => m.role === "assistant");
     const text =
       assistantMsg?.content
-        .map((c) => (c.type === "text" ? c.text.value : ""))
+        .map((c: any) => (c.type === "text" ? c.text.value : ""))
         .join("\n")
         .trim() ?? "";
 
