@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { openai } from "@/lib/openai";
+import { getOpenAI } from "@/lib/openai";
 
 export const runtime = "nodejs"; // stabiler als Edge
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -19,6 +19,8 @@ export async function POST(req: NextRequest, { params }: { params: { threadId: s
   const userText = (body.content ?? "").toString();
 
   try {
+    const openai = await getOpenAI();
+
     // 1) User-Message anhängen
     await openai.beta.threads.messages.create(threadId, { role: "user", content: userText });
 
