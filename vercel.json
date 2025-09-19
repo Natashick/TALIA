@@ -1,5 +1,7 @@
 {
   "functions": {
-    "api/assistants/**.ts": { "maxDuration": 60 }
+    "app/api/**/route.ts": {
+      "maxDuration": 60
+    }
   }
 }
