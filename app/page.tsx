@@ -12,28 +12,41 @@ export default function Home() {
   const [busy, setBusy] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
+  // Initialisiere Thread
   useEffect(() => {
     const saved = window.localStorage.getItem("assistant_thread_id");
     if (saved) {
       setThreadId(saved);
-      return;
+    } else {
+      fetch("/api/assistants/threads", { method: "POST" })
+        .then((r) => r.json())
+        .then((j) => {
+          if (j.thread_id) {
+            setThreadId(j.thread_id);
+            window.localStorage.setItem("assistant_thread_id", j.thread_id);
+          }
+        });
     }
-    fetch("/api/assistants/threads", { method: "POST" })
-      .then((r) => r.json())
-      .then((j) => {
-        if (j.thread_id) {
-          setThreadId(j.thread_id);
-          window.localStorage.setItem("assistant_thread_id", j.thread_id);
-        } else {
-          alert("Failed to create thread");
-        }
-      })
-      .catch((e) => alert(e?.message ?? "Failed to create thread"));
   }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [msgs, busy]);
+
+  async function sendMessage(userText: string, threadIdToUse: string) {
+    const res = await fetch(`/api/assistants/threads/${threadIdToUse}/messages`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ content: userText }),
+    });
+    const j = await res.json();
+    // Fallback: Wenn neue thread_id kommt, übernehmen!
+    if (j.thread_id && j.thread_id !== threadId) {
+      setThreadId(j.thread_id);
+      window.localStorage.setItem("assistant_thread_id", j.thread_id);
+    }
+    return j;
+  }
 
   async function onSend() {
     if (!threadId || !input.trim()) return;
@@ -42,13 +55,19 @@ export default function Home() {
     setMsgs((m) => [...m, { role: "user", content: userText }]);
     setBusy(true);
     try {
-      const res = await fetch(`/api/assistants/threads/${threadId}/messages`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ content: userText }),
-      });
-      const j = await res.json();
-      if (!res.ok) throw new Error(j.error || "Request failed");
+      let j = await sendMessage(userText, threadId);
+      // Fehler: Thread existiert nicht (404)
+      if (j.error && j.error.includes("No thread found")) {
+        window.localStorage.removeItem("assistant_thread_id");
+        const tRes = await fetch("/api/assistants/threads", { method: "POST" });
+        const tJson = await tRes.json();
+        if (tJson.thread_id) {
+          setThreadId(tJson.thread_id);
+          window.localStorage.setItem("assistant_thread_id", tJson.thread_id);
+          j = await sendMessage(userText, tJson.thread_id);
+        }
+      }
+      if (j.error) throw new Error(j.error);
       setMsgs((m) => [...m, { role: "assistant", content: j.message || "(no content)" }]);
     } catch (e: any) {
       setMsgs((m) => [...m, { role: "assistant", content: `Error: ${e?.message ?? e}` }]);
@@ -85,7 +104,8 @@ export default function Home() {
                 m.role === "user" ? styles.userMsg : styles.taliaMsg
               }
             >
-              <div className={styles.senderLabel}>
+              <div className={styles.senderLabel}
+                   style={{ color: m.role === "user" ? "#2563eb" : "#6b7280" }}>
                 {m.role === "user" ? "You" : "TALIA"}
               </div>
               <div className={styles.bubble}>{m.content}</div>
