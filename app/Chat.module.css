@@ -45,7 +45,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 100px;
+  padding-bottom: 100px; /* Platz für InputRow */
 }
 .chatContainer {
   width: 100%;
@@ -157,6 +157,4 @@
   font-size: 0.97em;
   padding: 18px 0 6px 0;
   margin-top: 0;
-}
-  padding-bottom: 100px; /* Platz für InputRow */
 }
