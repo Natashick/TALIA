@@ -86,7 +86,7 @@ export default function Home() {
   return (
     <div className={styles.layout}>
       <header className={styles.header}>
-        <Image src="/logo.png" alt="TALIA Logo" width={96} height={96} />
+        <Image src="/logo.png" alt="TALIA Logo" width={96} height={96} quality={100} priority sizes="96px"/>
         <div>
           <h1>TALIA</h1>
           <h2>Threat Analysis and Learning Intelligence for Automotive</h2>
