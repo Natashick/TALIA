@@ -1,26 +1,20 @@
-/* ---------- Design Tokens ---------- */
 :root{
   --bg: #f6f8fb;
   --card: #ffffff;
   --ink: #0f172a;
   --muted: #6b7280;
   --line: #e5e7eb;
-
   --brand-1: #1d4ed8;
   --brand-2: #60a5fa;
   --ring: #93c5fd;
-
   --shadow: 0 10px 30px rgba(29,78,216,.12);
   --soft-shadow: 0 2px 10px rgba(15,23,42,.06);
-
   --radius: 18px;
   --radius-sm: 12px;
-
   --max: 960px;
   --max-chat: 860px;
   --gap: 20px;
 }
-
 @media (prefers-color-scheme: dark){
   :root{
     --bg: #0b1220;
@@ -28,25 +22,22 @@
     --ink: #e5edf8;
     --muted: #9aa4b2;
     --line: #233148;
-
     --brand-1: #3b82f6;
     --brand-2: #60a5fa;
     --ring: #60a5fa;
-
     --shadow: 0 10px 30px rgba(59,130,246,.18);
     --soft-shadow: 0 2px 10px rgba(0,0,0,.35);
   }
 }
-
 *{box-sizing:border-box}
-html, body {height: 100%;}
-body {
-  margin: 0;
+html,body{height:100%}
+body{
+  margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
-  color: var(--ink);
-  background: var(--bg);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color:var(--ink);
+  background:var(--bg);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
 }
 @media (max-width: 900px){
   :root{ --max-chat: 92vw; }
