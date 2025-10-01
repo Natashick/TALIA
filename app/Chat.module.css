@@ -40,8 +40,67 @@
   text-align: center;
   margin: 0;
 }
-
-/* INPUT-FELD UND BUTTON */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 100px;
+}
+.chatContainer {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 0 0 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.userMsg, .taliaMsg {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.userMsg {
+  align-items: flex-end;
+}
+.senderLabel {
+  font-size: 0.95em;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.bubble {
+  background: #f1f5f9;
+  color: #222;
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 2px 12px #2563eb11;
+  max-width: 86%;
+  word-break: break-word;
+  font-size: 1em;
+}
+.userMsg .bubble {
+  background: linear-gradient(90deg, #2563eb 0%, #60a5fa 100%);
+  color: #fff;
+  align-self: flex-end;
+}
+.taliaMsg .bubble {
+  background: #f1f5f9;
+  color: #222;
+  align-self: flex-start;
+}
+.emptyMsg {
+  text-align: center;
+  color: #888;
+  font-size: 1.08em;
+  margin-top: 24px;
+}
+.typingMsg {
+  color: #2563eb;
+  font-style: italic;
+  padding: 8px 0 8px 4px;
+  font-size: 1em;
+}
 .inputRow {
   position: fixed;
   bottom: 0;
@@ -92,12 +151,12 @@
   background: linear-gradient(90deg, #1d4ed8 0%, #60a5fa 100%);
   box-shadow: 0 1px 16px #2563eb33;
 }
-
-/* Damit der Chat nicht vom Input überlappt wird */
-.main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.footer {
+  text-align: center;
+  color: #aaa;
+  font-size: 0.97em;
+  padding: 18px 0 6px 0;
+  margin-top: 0;
+}
   padding-bottom: 100px; /* Platz für InputRow */
 }
