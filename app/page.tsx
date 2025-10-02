@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import styles from "./Chat.module.css";
+import ReactMarkdown from "react-markdown";
+import styles from "./Chat.module.css"; // Deine CSS Datei
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
@@ -68,6 +69,8 @@ export default function Home() {
         }
       }
       if (j.error) throw new Error(j.error);
+      // DEBUG: Rohantwort ausgeben
+      console.log("Assistant Rohantwort:", j.message);
       setMsgs((m) => [...m, { role: "assistant", content: j.message || "(no content)" }]);
     } catch (e: any) {
       setMsgs((m) => [...m, { role: "assistant", content: `Error: ${e?.message ?? e}` }]);
@@ -108,7 +111,11 @@ export default function Home() {
                    style={{ color: m.role === "user" ? "#2563eb" : "#6b7280" }}>
                 {m.role === "user" ? "You" : "TALIA"}
               </div>
-              <div className={styles.bubble}>{m.content}</div>
+              <div className={styles.bubble}>
+                {m.role === "assistant"
+                  ? <ReactMarkdown>{m.content}</ReactMarkdown>
+                  : m.content}
+              </div>
             </div>
           ))}
           {busy && <div className={styles.typingMsg}>TALIA is typing…</div>}
