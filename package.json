@@ -8,13 +8,15 @@
     "start": "next start"
   },
   "engines": {
-    "node": ">=18"
+    "node": "20.x"
   },
   "dependencies": {
-    "next": "15.5.4",
+    "next": "15.5.7",
     "openai": "^4.104.0",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "react-markdown": "^8.0.0",
+    "remark-gfm": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -22,9 +24,7 @@
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.21",
     "tailwindcss": "^4.1.13",
-    "typescript": "^5"
-  },
-  "overrides": {
-    "node-domexception": "npm:domexception@^2.0.1"
+    "typescript": "^5",
+    "baseline-browser-mapping": "^1.0.1"
   }
 }
