@@ -16,12 +16,12 @@
     "plugins": [{ "name": "next" }],
     "baseUrl": ".",
     "paths": { "@/*": ["./*"] },
-    "types": ["node", "react", "next"],
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "types": ["node", "react", "next"]
   },
   "include": [
     "next-env.d.ts",
     "types/**/*.d.ts",
+    "**/*.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
