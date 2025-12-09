@@ -25,6 +25,6 @@
     "autoprefixer": "^10.4.21",
     "tailwindcss": "^4.1.13",
     "typescript": "^5",
-    "baseline-browser-mapping": "^1.0.1"
+    "baseline-browser-mapping": "^2.8.9"
   }
 }
