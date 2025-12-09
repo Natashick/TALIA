@@ -56,4 +56,12 @@ Alle API-Routen laufen mit `runtime = "nodejs"`; das OpenAI SDK wird lazy gelade
 - Build verwendet `--no-turbopack` für Kompatibilität.
 - Längere Antworten können bei Serverless-Timeouts scheitern – optional Streaming/Status-Polling einplanen.
 
+## Dependency-Analyse
+
+Siehe [DEPENDENCY_ANALYSIS.md](./DEPENDENCY_ANALYSIS.md) für Details zu bekannten Dependency-Problemen (z.B. `node-domexception`).
+
+## Sicherheit
+
+⚠️ **WICHTIG**: Siehe [SECURITY_NOTES.md](./SECURITY_NOTES.md) für kritische Sicherheitsinformationen und Schwachstellen.
+
 MIT
