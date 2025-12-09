@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "typecheck": "npx tsc --noEmit",
+    "ci-check": "npm run typecheck && npm run build"
   },
   "engines": {
     "node": "20.x"
