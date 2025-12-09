@@ -4,7 +4,7 @@ Minimaler Chat mit der OpenAI Assistants API (Threads + Runs) auf Basis von Next
 
 ## Voraussetzungen
 
-- Node.js 18+ (empfohlen 20+)
+- Node.js 20.x (pinned via .nvmrc and package.json engines)
 - Umgebungsvariablen:
   - `OPENAI_API_KEY` (Format: `sk-...`)
   - `OPENAI_ASSISTANT_ID` (Format: `asst_...`)
