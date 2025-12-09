@@ -4,6 +4,16 @@
 
 This document provides analysis of the `node-domexception` package dependency in this project.
 
+To run the dependency analysis yourself, use:
+```bash
+./scripts/check-dependencies.sh
+```
+
+Or manually:
+```bash
+npm why node-domexception
+```
+
 ## Dependency Chain
 
 Running `npm why node-domexception` reveals the following dependency chain:
