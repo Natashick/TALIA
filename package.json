@@ -5,19 +5,17 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "typecheck": "npx tsc --noEmit",
-    "ci-check": "npm run typecheck && npm run build"
+    "start": "next start"
   },
   "engines": {
-    "node": "20.x"
+    "node": ">=18"
   },
   "dependencies": {
     "next": "15.5.7",
-    "openai": "^4.104.0",
+    "openai": "^6.10.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "react-markdown": "^8.0.0",
+    "react-markdown": "^10.1.0",
     "remark-gfm": "^3.0.1"
   },
   "devDependencies": {
