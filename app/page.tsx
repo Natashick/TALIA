@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import styles from "./Chat.module.css"; // Deine CSS Datei
 
 type ChatMsg = { role: "user" | "assistant"; content: string };
@@ -113,7 +114,7 @@ export default function Home() {
               </div>
               <div className={styles.bubble}>
                 {m.role === "assistant"
-                  ? <ReactMarkdown>{m.content}</ReactMarkdown>
+                  ? <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
                   : m.content}
               </div>
             </div>
