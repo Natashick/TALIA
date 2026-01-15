@@ -11,17 +11,17 @@ async function createMessageInThread(
   openai: any,
   threadId: string,
   userText: string
-): Promise<{ threadId: string; messageCreated: boolean }> {
+): Promise<string> {
   try {
     // Try to post a message to the thread
     await openai.beta.threads.messages.create(threadId, { role: "user", content: userText });
-    return { threadId, messageCreated: true };
+    return threadId;
   } catch (err: any) {
     // Fallback: Thread existiert nicht (404)? → neuen Thread anlegen
     if (err.status === 404) {
       const newThread = await openai.beta.threads.create();
       await openai.beta.threads.messages.create(newThread.id, { role: "user", content: userText });
-      return { threadId: newThread.id, messageCreated: true };
+      return newThread.id;
     }
     throw err;
   }
@@ -55,8 +55,7 @@ export async function POST(
   // Versuche, in den angegebenen Thread zu posten (mit automatischem Fallback bei 404)
   let realThreadId: string;
   try {
-    const result = await createMessageInThread(openai, threadId, userText);
-    realThreadId = result.threadId;
+    realThreadId = await createMessageInThread(openai, threadId, userText);
   } catch (err: any) {
     return NextResponse.json({ error: err.message || "OpenAI error" }, { status: 500 });
   }
@@ -70,10 +69,10 @@ export async function POST(
       // Fallback: Thread existiert nicht mehr (404)? → neuen Thread anlegen
       if (err.status === 404) {
         // Thread wurde zwischen message creation und run creation gelöscht
-        // Erstelle neuen Thread mit dem User-Text
+        // Erstelle neuen Thread und poste Nachricht direkt
         const newThread = await openai.beta.threads.create();
-        const result = await createMessageInThread(openai, newThread.id, userText);
-        realThreadId = result.threadId;
+        await openai.beta.threads.messages.create(newThread.id, { role: "user", content: userText });
+        realThreadId = newThread.id;
         run = await openai.beta.threads.runs.create(realThreadId, { assistant_id: assistantId });
       } else {
         throw err;
