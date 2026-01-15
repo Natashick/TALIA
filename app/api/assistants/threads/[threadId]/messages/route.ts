@@ -70,10 +70,10 @@ export async function POST(
       // Fallback: Thread existiert nicht mehr (404)? → neuen Thread anlegen
       if (err.status === 404) {
         // Thread wurde zwischen message creation und run creation gelöscht
-        // Erstelle neuen Thread mit einer frischen Message
+        // Erstelle neuen Thread mit dem User-Text
         const newThread = await openai.beta.threads.create();
-        await openai.beta.threads.messages.create(newThread.id, { role: "user", content: userText });
-        realThreadId = newThread.id;
+        const result = await createMessageInThread(openai, newThread.id, userText);
+        realThreadId = result.threadId;
         run = await openai.beta.threads.runs.create(realThreadId, { assistant_id: assistantId });
       } else {
         throw err;
