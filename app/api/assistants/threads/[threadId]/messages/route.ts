@@ -6,6 +6,27 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 type Body = { content: string };
 
+// Helper function to handle thread fallback on 404 errors
+async function ensureThreadExists(
+  openai: any,
+  threadId: string,
+  userText: string
+): Promise<string> {
+  try {
+    // Try to post a message to verify thread exists
+    await openai.beta.threads.messages.create(threadId, { role: "user", content: userText });
+    return threadId;
+  } catch (err: any) {
+    // Fallback: Thread existiert nicht (404)? → neuen Thread anlegen
+    if (err.status === 404) {
+      const newThread = await openai.beta.threads.create();
+      await openai.beta.threads.messages.create(newThread.id, { role: "user", content: userText });
+      return newThread.id;
+    }
+    throw err;
+  }
+}
+
 // POST /api/assistants/threads/:threadId/messages
 export async function POST(
   req: Request,
@@ -29,25 +50,14 @@ export async function POST(
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }); }
   const userText = (body.content ?? "").toString();
 
-  let realThreadId = threadId;
-  let messageCreated = false;
   const openai = await getOpenAI();
 
-  // Versuche zuerst, in den angegebenen Thread zu posten
+  // Versuche, in den angegebenen Thread zu posten (mit automatischem Fallback bei 404)
+  let realThreadId: string;
   try {
-    await openai.beta.threads.messages.create(realThreadId, { role: "user", content: userText });
-    messageCreated = true;
+    realThreadId = await ensureThreadExists(openai, threadId, userText);
   } catch (err: any) {
-    // Fallback: Thread existiert nicht (404)? → neuen Thread anlegen und nochmal versuchen!
-    if (err.status === 404) {
-      const newThread = await openai.beta.threads.create();
-      realThreadId = newThread.id;
-      await openai.beta.threads.messages.create(realThreadId, { role: "user", content: userText });
-      messageCreated = true;
-    } else {
-      // anderer Fehler → weiterreichen
-      return NextResponse.json({ error: err.message || "OpenAI error" }, { status: 500 });
-    }
+    return NextResponse.json({ error: err.message || "OpenAI error" }, { status: 500 });
   }
 
   // 2) Run starten (jetzt mit realThreadId)
@@ -58,10 +68,7 @@ export async function POST(
     } catch (err: any) {
       // Fallback: Thread existiert nicht mehr (404)? → neuen Thread anlegen
       if (err.status === 404) {
-        const newThread = await openai.beta.threads.create();
-        realThreadId = newThread.id;
-        // Nachricht erneut erstellen im neuen Thread
-        await openai.beta.threads.messages.create(realThreadId, { role: "user", content: userText });
+        realThreadId = await ensureThreadExists(openai, realThreadId, userText);
         run = await openai.beta.threads.runs.create(realThreadId, { assistant_id: assistantId });
       } else {
         throw err;
