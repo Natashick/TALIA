@@ -7,11 +7,9 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 type Body = { content: string };
 
 // POST /api/assistants/threads/:threadId/messages
-export async function POST(
-  req: NextRequest,
-  context: { params: Record<string, string> }
-) {
+export async function POST(req: NextRequest, context: any) {
   const threadId = context.params.threadId;
+
   if (!threadId) {
     return NextResponse.json({ error: "Missing threadId" }, { status: 400 });
   }
