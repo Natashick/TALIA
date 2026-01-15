@@ -7,12 +7,23 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 type Body = { content: string };
 
 // POST /api/assistants/threads/:threadId/messages
-export async function POST(req: Request, { params }: { params: Promise<{ threadId: string }> }) {
-  const assistantId = process.env.OPENAI_ASSISTANT_ID;
-  if (!assistantId) return NextResponse.json({ error: "Missing OPENAI_ASSISTANT_ID" }, { status: 500 });
+export async function POST(
+  req: Request,
+  { params }: { params: { threadId: string } }
+) {
+  const { threadId } = params;
 
-  const { threadId } = await params;
-  if (!threadId) return NextResponse.json({ error: "Missing threadId" }, { status: 400 });
+  if (!threadId) {
+    return NextResponse.json({ error: "Missing threadId" }, { status: 400 });
+  }
+
+  const assistantId = process.env.OPENAI_ASSISTANT_ID;
+  if (!assistantId) {
+    return NextResponse.json(
+      { error: "Missing OPENAI_ASSISTANT_ID" },
+      { status: 500 }
+    );
+  }
   
   let body: Body;
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 }); }
