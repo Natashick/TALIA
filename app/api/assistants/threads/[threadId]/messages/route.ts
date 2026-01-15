@@ -1,17 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getOpenAI } from "@/lib/openai";
 
-export const runtime = "nodejs"; // stabiler als Edge
+export const runtime = "nodejs";
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 type Body = { content: string };
 
 // POST /api/assistants/threads/:threadId/messages
 export async function POST(
-  req: Request,
-  { params }: { params: { threadId: string } }
+  req: NextRequest,
+  context: { params: { threadId: string } }
 ) {
-  const { threadId } = params;
+  const { threadId } = context.params;
 
   if (!threadId) {
     return NextResponse.json({ error: "Missing threadId" }, { status: 400 });
