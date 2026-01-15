@@ -9,9 +9,9 @@ type Body = { content: string };
 // POST /api/assistants/threads/:threadId/messages
 export async function POST(
   req: Request,
-  { params }: { params: { threadId: string } }
+  { params }: { params: Promise<{ threadId: string }> }
 ) {
-  const { threadId } = params;
+  const { threadId } = await params;
 
   if (!threadId) {
     return NextResponse.json({ error: "Missing threadId" }, { status: 400 });
