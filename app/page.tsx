@@ -17,7 +17,7 @@ export default function Home() {
   // Initialisiere Thread
   useEffect(() => {
     const saved = window.localStorage.getItem("assistant_thread_id");
-    if (saved) {
+    if (saved && saved !== "undefined" && saved !== "null") {
       setThreadId(saved);
     } else {
       fetch("/api/assistants/threads", { method: "POST" })
@@ -51,7 +51,7 @@ export default function Home() {
   }
 
   async function onSend() {
-    if (!threadId || !input.trim() || busy) return;
+    if (!threadId || threadId === "undefined" || !input.trim() || busy) return;
     const userText = input.trim();
     setInput("");
     setMsgs((m) => [...m, { role: "user", content: userText }]);
