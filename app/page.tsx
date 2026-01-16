@@ -51,7 +51,7 @@ export default function Home() {
   }
 
   async function onSend() {
-    if (!threadId || !input.trim()) return;
+    if (!threadId || !input.trim() || busy) return;
     const userText = input.trim();
     setInput("");
     setMsgs((m) => [...m, { role: "user", content: userText }]);
