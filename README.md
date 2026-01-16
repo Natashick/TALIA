@@ -56,6 +56,66 @@ Alle API-Routen laufen mit `runtime = "nodejs"`; das OpenAI SDK wird lazy gelade
 - Build verwendet `--no-turbopack` für Kompatibilität.
 - Längere Antworten können bei Serverless-Timeouts scheitern – optional Streaming/Status-Polling einplanen.
 
+## Git Branching Workflow
+
+Dieses Projekt verwendet folgende Branching-Strategie:
+
+### Branch-Typen
+
+- **`main`**: Produktionszweig – enthält stabile, getestete Versionen
+- **`develop`** (optional): Integrationszweig für Features
+- **`feature/*`**: Feature-Branches (z.B. `feature/chat-history`)
+- **`bugfix/*`**: Bugfix-Branches (z.B. `bugfix/api-timeout`)
+- **`hotfix/*`**: Dringende Produktions-Fixes
+- **`copilot/*`**: Automatische Branches von GitHub Copilot
+
+### Workflow
+
+1. **Neues Feature entwickeln**:
+   ```bash
+   git checkout -b feature/mein-feature
+   # Änderungen vornehmen
+   git add .
+   git commit -m "feat: Beschreibung"
+   git push origin feature/mein-feature
+   ```
+
+2. **Pull Request erstellen**:
+   - Öffne PR gegen `main` (oder `develop`)
+   - Code Review abwarten
+   - Nach Approval mergen
+
+3. **Branch aufräumen**:
+   ```bash
+   git branch -d feature/mein-feature
+   git push origin --delete feature/mein-feature
+   ```
+
+### Nützliche Befehle
+
+```bash
+# Alle Branches anzeigen
+git branch -a
+
+# Branch wechseln
+git checkout branch-name
+
+# Neuen Branch erstellen und wechseln
+git checkout -b new-branch-name
+
+# Branch löschen (lokal)
+git branch -d branch-name
+
+# Branch löschen (remote)
+git push origin --delete branch-name
+
+# Aktuellen Branch mit main synchronisieren
+git checkout main
+git pull origin main
+git checkout feature/mein-feature
+git merge main
+```
+
 ## Dependency-Analyse
 
 Siehe [DEPENDENCY_ANALYSIS.md](./DEPENDENCY_ANALYSIS.md) für Details zu bekannten Dependency-Problemen (z.B. `node-domexception`).
