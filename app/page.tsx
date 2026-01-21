@@ -118,7 +118,7 @@ export default function Home() {
               </div>
             </div>
           ))}
-          {busy && <div className={styles.typingMsg}>TALIA is typing…</div>}
+          {busy && <div className={styles.typingMsg}>TALIA is typing</div>}
           <div ref={bottomRef} />
         </div>
         <form
