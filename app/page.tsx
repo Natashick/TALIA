@@ -99,7 +99,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.chatContainer}>
           {msgs.length === 0 && (
-            <div className={styles.emptyMsg}>Schreibe eine Nachricht, um zu starten…</div>
+            <div className={styles.emptyMsg}>Write a message to start…</div>
           )}
           {msgs.map((m, i) => (
             <div
@@ -109,7 +109,7 @@ export default function Home() {
               }
             >
               <div className={styles.senderLabel}
-                   style={{ color: m.role === "user" ? "#2563eb" : "#6b7280" }}>
+                   style={{ color: m.role === "user" ? "var(--brand-1)" : "var(--muted)" }}>
                 {m.role === "user" ? "You" : "TALIA"}
               </div>
               <div className={styles.bubble}>
@@ -131,7 +131,7 @@ export default function Home() {
         >
           <textarea
             className={styles.input}
-            placeholder="Nachricht eingeben… (Enter = senden, Shift+Enter = Zeilenumbruch)"
+            placeholder="Type a message… (Enter to send, Shift+Enter for new line)"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={onKeyDown}
@@ -141,13 +141,10 @@ export default function Home() {
             disabled={!threadId || busy || !input.trim()}
             className={styles.sendBtn}
           >
-            Senden
+            Send
           </button>
         </form>
       </main>
-      <footer className={styles.footer}>
-        Powered by OpenAI Assistants API
-      </footer>
     </div>
   );
 }
