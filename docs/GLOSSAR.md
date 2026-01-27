@@ -62,7 +62,7 @@ Personal Data, Consent, Data Subject, Controller, Processor, Privacy by Design
 
 **Sicherheitsrelevanz:** ADAS-Systeme sind kritisch für Fahrzeugsicherheit und potenzielle Angriffsziele.
 
-**Beispiel:** Adaptiver Tempom (ACC), Spurhalteassistent (LKA)
+**Beispiel:** Adaptiver Tempomat (ACC), Spurhalteassistent (LKA)
 
 **Siehe auch:** [ECU](#ecu-electronic-control-unit-), [V2X](#v2x-vehicle-to-everything-)
 
