@@ -1,0 +1,1 @@
+Complete technical documentation in German as created earlier

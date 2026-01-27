@@ -1,0 +1,1 @@
+Complete privacy policy document in German with all 16 sections as created earlier

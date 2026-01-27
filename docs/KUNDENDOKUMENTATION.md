@@ -1,0 +1,1 @@
+Complete user manual in German as created earlier with all 12 chapters

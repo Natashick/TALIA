@@ -1,0 +1,1 @@
+Complete LASTENHEFT document (German requirements specification) as created earlier with all sections from "Einleitung" through "Anhänge"

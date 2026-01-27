@@ -1,0 +1,1 @@
+Complete PFLICHTENHEFT document (German technical specification) as created earlier

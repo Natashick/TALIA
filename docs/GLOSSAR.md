@@ -1,0 +1,1 @@
+Complete glossary in German with all technical terms starting from A-Z as created earlier
